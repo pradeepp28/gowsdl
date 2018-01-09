@@ -373,7 +373,7 @@ func replaceReservedWords(identifier string) string {
 // Normalizes value to be used as a valid Go identifier, avoiding compilation issues
 func normalize(value string) string {
 	mapping := func(r rune) rune {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			return r
 		}
 		return -1
@@ -437,7 +437,7 @@ func toGoType(xsdType string) string {
 		return value
 	}
 
-	return "*" + replaceReservedWords(makePublic(t))
+	return replaceReservedWords(makePublic(t))
 }
 
 // Given a message, finds its type.
@@ -472,9 +472,9 @@ func (g *GoWSDL) findType(message string) string {
 		for _, schema := range g.wsdl.Types.Schemas {
 			for _, el := range schema.Elements {
 				if strings.EqualFold(elRef, el.Name) {
-					if el.Type != "" {
-						return stripns(el.Type)
-					}
+					// if el.Type != "" {
+					// 	return stripns(el.Type)
+					// }
 					return el.Name
 				}
 			}

@@ -33,13 +33,8 @@ var opsTmpl = `
 		}
 	}
 
-	func (service *{{$portType}}) AddHeader(header interface{}) {
-		service.client.AddHeader(header)
-	}
-
-	// Backwards-compatible function: use AddHeader instead
 	func (service *{{$portType}}) SetHeader(header interface{}) {
-		service.client.AddHeader(header)
+		service.client.SetHeader(header)
 	}
 
 	{{range .Operations}}

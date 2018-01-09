@@ -46,7 +46,8 @@ func (s *XSDSchema) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			s.ElementFormDefault = attr.Value
 		}
 	}
-
+	var elementName string
+	mapSimpleTypeAndEle := make(map[string]string)
 Loop:
 	for {
 		tok, err := d.Token()
@@ -79,6 +80,7 @@ Loop:
 				if err := d.DecodeElement(x, &t); err != nil {
 					return err
 				}
+				elementName = x.Name
 				s.Elements = append(s.Elements, x)
 			case "attribute":
 				x := new(XSDAttribute)
@@ -91,13 +93,20 @@ Loop:
 				if err := d.DecodeElement(x, &t); err != nil {
 					return err
 				}
+				x.Name = elementName
 				s.ComplexTypes = append(s.ComplexTypes, x)
 			case "simpleType":
 				x := new(XSDSimpleType)
 				if err := d.DecodeElement(x, &t); err != nil {
 					return err
 				}
+				if _, ok := mapSimpleTypeAndEle[x.Name]; ok {
+					x.Name = x.Name + elementName
+				}
+				//dummy map to check duplicate XSD
+				mapSimpleTypeAndEle[x.Name] = elementName
 				s.SimpleType = append(s.SimpleType, x)
+
 			default:
 				d.Skip()
 				continue Loop

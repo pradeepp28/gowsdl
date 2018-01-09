@@ -20,7 +20,7 @@ type SOAPEnvelope struct {
 type SOAPHeader struct {
 	XMLName xml.Name ` + "`" + `xml:"http://schemas.xmlsoap.org/soap/envelope/ Header"` + "`" + `
 
-	Items []interface{} ` + "`" + `xml:",omitempty"` + "`" + `
+	Items interface{} ` + "`" + `xml:",omitempty"` + "`" + `
 }
 
 type SOAPBody struct {
@@ -90,7 +90,7 @@ type SOAPClient struct {
 	url     string
 	tlsCfg  *tls.Config
 	auth    *BasicAuth
-	headers []interface{}
+	header interface{}
 }
 
 // **********
@@ -201,16 +201,15 @@ func NewSOAPClientWithTLSConfig(url string, tlsCfg *tls.Config, auth *BasicAuth)
 	}
 }
 
-func (s *SOAPClient) AddHeader(header interface{}) {
-	s.headers = append(s.headers, header)
+func (s *SOAPClient) SetHeader(header interface{}) {
+	s.header = header
 }
 
 func (s *SOAPClient) Call(soapAction string, request, response interface{}) error {
 	envelope := SOAPEnvelope{}
 
-	if s.headers != nil && len(s.headers) > 0 {
-		soapHeader := &SOAPHeader{Items: make([]interface{}, len(s.headers))}
-		copy(soapHeader.Items, s.headers)
+	if s.header != nil {
+		soapHeader := &SOAPHeader{Items: s.header}
 		envelope.Header = soapHeader
 	}
 
