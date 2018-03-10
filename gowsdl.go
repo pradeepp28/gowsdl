@@ -437,7 +437,8 @@ func toGoType(xsdType string) string {
 		return value
 	}
 
-	return replaceReservedWords(makePublic(t))
+	//return string instead of replaceReservedWords(makePublic(t))
+	return "string"
 }
 
 // Given a message, finds its type.

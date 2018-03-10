@@ -5,10 +5,10 @@
 package gowsdl
 
 var soapTmpl = `
-var timeout = time.Duration(30 * time.Second)
+var Timeout = time.Duration(60 * time.Second)
 
 func dialTimeout(network, addr string) (net.Conn, error) {
-	return net.DialTimeout(network, addr, timeout)
+	return net.DialTimeout(network, addr, Timeout)
 }
 
 type SOAPEnvelope struct {
@@ -240,7 +240,7 @@ func (s *SOAPClient) Call(soapAction string, request, response interface{}) erro
 	req.Header.Add("Content-Type", "text/xml; charset=\"utf-8\"")
 	req.Header.Add("SOAPAction", soapAction)
 
-	req.Header.Set("User-Agent", "gowsdl/0.1")
+	req.Header.Set("User-Agent", "remedy/create-1.0")
 	req.Close = true
 
 	tr := &http.Transport{
@@ -248,7 +248,7 @@ func (s *SOAPClient) Call(soapAction string, request, response interface{}) erro
 		Dial: dialTimeout,
 	}
 
-	client := &http.Client{Transport: tr}
+	client := &http.Client{Timeout: Timeout, Transport: tr}
 	res, err := client.Do(req)
 	if err != nil {
 		return err

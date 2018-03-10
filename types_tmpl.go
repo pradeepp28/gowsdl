@@ -82,10 +82,6 @@ var typesTmpl = `
 {{range .Schemas}}
 	{{ $targetNamespace := .TargetNamespace }}
 
-	{{range .SimpleType}}
-		{{template "SimpleType" .}}
-	{{end}}
-
 	{{range .Elements}}
 		{{if not .Type}}
 			{{/* ComplexTypeLocal */}}
